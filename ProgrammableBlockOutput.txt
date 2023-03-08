@@ -1,0 +1,24 @@
+/*
+ * Commands:
+ * nightclub - Toggles the nightclub "party mode" (rotating lights and exhaust pipes).
+ * 
+ * Below are some constants that refer to names of blocks/block groups. Make sure they're up to date.
+ * Don't change anything else!
+ */
+
+const string NightclubExhaustGroupName = "Nightclub Exhausts";
+const string NightclubRotatingLightGroupName = "Nightclub Rotating Lights";
+const string NightclubNormalLightName = "Nightclub Normal Light";
+
+MyCommandLine R=new MyCommandLine();Dictionary<string,J>S=new Dictionary<string,J>(StringComparer.OrdinalIgnoreCase);
+bool T=false;Program(){S["nightclub"]=new J("nightclub","Turn the nightclub party mode on/off.",O);}void V(List<
+IMyTerminalBlock>C,List<IMyReflectorLight>W){for(int X=0;X<C.Count;X++){C[X].ApplyAction("OnOff_Off");}for(int Q=0;Q<W.Count;Q++){
+IMyReflectorLight A=W[Q];A.Enabled=A.CustomName==NightclubNormalLightName;}}void Y(List<IMyTerminalBlock>C,List<IMyReflectorLight>W){for(
+int X=0;X<C.Count;X++){C[X].ApplyAction("OnOff_On");}for(int Q=0;Q<W.Count;Q++){IMyReflectorLight A=W[Q];A.Enabled=A.
+CustomName!=NightclubNormalLightName;}}void O(){IMyBlockGroup B=GridTerminalSystem.GetBlockGroupWithName(NightclubExhaustGroupName
+);var C=new List<IMyTerminalBlock>();B.GetBlocks(C);IMyBlockGroup D=GridTerminalSystem.GetBlockGroupWithName(
+NightclubRotatingLightGroupName);var E=new List<IMyReflectorLight>();D.GetBlocksOfType(E);if(T){V(C,E);}else{Y(C,E);}T=!T;}void Main(string F,
+UpdateType G){if(R.TryParse(F)){J H;string I=R.Argument(0);if(I==null){Echo(
+$"No command specified. Available commands: {string.Join(",",S.Values)}");}else if(S.TryGetValue(I,out H)){H.M();}else{Echo($"Unknown command {I}");}}}
+}class J{public string K{get;set;}public string L{get;set;}public Action M{get;set;}public J(string N,string U,Action P){
+K=N;L=U;M=P;}public override string ToString(){return$"{K} - {L}";}

@@ -21,9 +21,13 @@ namespace IngameScript {
 	}
 
 	partial class Program : MyGridProgram {
+		#region mdk preserve
 		const string NightclubExhaustGroupName = "Nightclub Exhausts";
 		const string NightclubRotatingLightGroupName = "Nightclub Rotating Lights";
 		const string NightclubNormalLightName = "Nightclub Normal Light";
+
+		#endregion
+
 		MyCommandLine _commandLine = new MyCommandLine();
 		Dictionary<string, Command> _commands = new Dictionary<string, Command>(StringComparer.OrdinalIgnoreCase);
 		bool isNightclubOn = false;

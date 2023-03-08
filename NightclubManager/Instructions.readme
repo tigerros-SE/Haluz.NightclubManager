@@ -1,2 +1,5 @@
 ﻿Commands:
 nightclub - Toggles the nightclub "party mode" (rotating lights and exhaust pipes).
+
+Below are some constants that refer to names of blocks/block groups. Make sure they're up to date.
+Don't change anything else!
