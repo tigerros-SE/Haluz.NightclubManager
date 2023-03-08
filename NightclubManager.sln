@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32407.337
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NightclubManager", "NightclubManager\NightclubManager.csproj", "{200A6683-C281-45F4-A2F3-A9A78A24E7E2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{200A6683-C281-45F4-A2F3-A9A78A24E7E2}.Debug|x64.ActiveCfg = Debug|x64
+		{200A6683-C281-45F4-A2F3-A9A78A24E7E2}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {72256CF1-F5F8-4D4C-B492-2DF83FE9666C}
+	EndGlobalSection
+EndGlobal
