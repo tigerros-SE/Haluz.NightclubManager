@@ -3,22 +3,64 @@
  * nightclub - Toggles the nightclub "party mode" (rotating lights and exhaust pipes).
  * 
  * Below are some constants that refer to names of blocks/block groups. Make sure they're up to date.
- * Don't change anything else!
  */
 
+// The nightclub exhaust group
 const string NightclubExhaustGroupName = "Nightclub Exhausts";
-const string NightclubRotatingLightGroupName = "Nightclub Rotating Lights";
+// The nightclub light group. The "NightclubNormalLight" should be in this group.
+const string NightclubLightGroupName = "Nightclub Lights";
+// The nightclub normal light. This light will be turned off during "party mode" and turned on otherwise.
+// This is the last constant. Don't change anything below this!
 const string NightclubNormalLightName = "Nightclub Normal Light";
 
-MyCommandLine R=new MyCommandLine();Dictionary<string,J>S=new Dictionary<string,J>(StringComparer.OrdinalIgnoreCase);
-bool T=false;Program(){S["nightclub"]=new J("nightclub","Turn the nightclub party mode on/off.",O);}void V(List<
-IMyTerminalBlock>C,List<IMyReflectorLight>W){for(int X=0;X<C.Count;X++){C[X].ApplyAction("OnOff_Off");}for(int Q=0;Q<W.Count;Q++){
-IMyReflectorLight A=W[Q];A.Enabled=A.CustomName==NightclubNormalLightName;}}void Y(List<IMyTerminalBlock>C,List<IMyReflectorLight>W){for(
-int X=0;X<C.Count;X++){C[X].ApplyAction("OnOff_On");}for(int Q=0;Q<W.Count;Q++){IMyReflectorLight A=W[Q];A.Enabled=A.
-CustomName!=NightclubNormalLightName;}}void O(){IMyBlockGroup B=GridTerminalSystem.GetBlockGroupWithName(NightclubExhaustGroupName
-);var C=new List<IMyTerminalBlock>();B.GetBlocks(C);IMyBlockGroup D=GridTerminalSystem.GetBlockGroupWithName(
-NightclubRotatingLightGroupName);var E=new List<IMyReflectorLight>();D.GetBlocksOfType(E);if(T){V(C,E);}else{Y(C,E);}T=!T;}void Main(string F,
-UpdateType G){if(R.TryParse(F)){J H;string I=R.Argument(0);if(I==null){Echo(
-$"No command specified. Available commands: {string.Join(",",S.Values)}");}else if(S.TryGetValue(I,out H)){H.M();}else{Echo($"Unknown command {I}");}}}
-}class J{public string K{get;set;}public string L{get;set;}public Action M{get;set;}public J(string N,string U,Action P){
-K=N;L=U;M=P;}public override string ToString(){return$"{K} - {L}";}
+MyCommandLine _commandLine=new MyCommandLine();Dictionary<string,Command>_commands=new Dictionary<string,Command>(
+StringComparer.OrdinalIgnoreCase);bool _isNightclubOn;Program(){_commands["nightclub"]=new Command("nightclub",
+"Toggles the nightclub \"party mode\" (rotating lights and exhaust pipes).",Nightclub);}void NightclubOff(List<IMyTerminalBlock>exhausts,List<IMyLightingBlock>lights){for(int ei=0;ei<exhausts.
+Count;ei++){exhausts[ei].ApplyAction("OnOff_Off");}for(int rli=0;rli<lights.Count;rli++){IMyLightingBlock light=lights[rli];
+light.Enabled=light.CustomName==NightclubNormalLightName;}}void NightclubOn(List<IMyTerminalBlock>exhausts,List<
+IMyLightingBlock>lights){for(int ei=0;ei<exhausts.Count;ei++){exhausts[ei].ApplyAction("OnOff_On");}for(int rli=0;rli<lights.Count;rli++
+){IMyLightingBlock light=lights[rli];light.Enabled=light.CustomName!=NightclubNormalLightName;}}void Nightclub(){
+IMyBlockGroup exhaustGroup=GridTerminalSystem.GetBlockGroupWithName(NightclubExhaustGroupName);var exhausts=new List<IMyTerminalBlock
+>();exhaustGroup.GetBlocks(exhausts);IMyBlockGroup lightGroup=GridTerminalSystem.GetBlockGroupWithName(
+NightclubLightGroupName);var lights=new List<IMyLightingBlock>();lightGroup.GetBlocksOfType(lights);if(_isNightclubOn){Me.WriteMessageToSurface
+(TextMessage.NewLine("Turning party mode off.",TextMessageType.Info),ProgrammableBlockSurfaceType.Display);NightclubOff(
+exhausts,lights);}else{Me.WriteMessageToSurface(TextMessage.NewLine("Turning party mode on.",TextMessageType.Info),
+ProgrammableBlockSurfaceType.Display);NightclubOn(exhausts,lights);}_isNightclubOn=!_isNightclubOn;}void Main(string argument,UpdateType
+updateSource){if(!_commandLine.TryParse(argument))return;Command command;string commandString=_commandLine.Argument(0);if(
+commandString==null){Echo($"No command specified. Available commands: {string.Join(",",_commands.Values)}");}else if(_commands.
+TryGetValue(commandString,out command)){command.Action();}else{Echo($"Unknown command {commandString}");}}
+}struct Command{public string Name{get;}public string Description{get;}public Action Action{get;}public Command(string
+name,string description,Action action){Name=name;Description=description;Action=action;}public override string ToString()=>
+$"{Name} - {Description}";}static class GridTerminalSystems{public static List<T>GetBlocksOfType<T>(this IMyGridTerminalSystem gts,Func<T,bool>
+collect=null)where T:class{var list=new List<T>();gts.GetBlocksOfType(list,collect);return list;}public static List<
+IMyTerminalBlock>GetBlocks(this IMyGridTerminalSystem gts,Func<IMyTerminalBlock,bool>collect=null){var list=new List<IMyTerminalBlock>()
+;gts.GetBlocks(list);if(collect==null)return list;for(int i=0;i<list.Count;){if(!collect(list[i])){list.RemoveAt(i);}else
+{i++;}}return list;}public static List<IMyBlockGroup>GetBlockGroups(this IMyGridTerminalSystem gts,Func<IMyBlockGroup,
+bool>collect=null){var list=new List<IMyBlockGroup>();gts.GetBlockGroups(list,collect);return list;}}static class
+ProgrammableBlocks{public static void WriteMessageToSurface(this IMyProgrammableBlock pb,TextMessage message,ProgrammableBlockSurfaceType
+surfaceType){IMyTextSurface surface=pb.GetSurface((int)surfaceType);surface.WriteMessage(message);}public static void
+WriteLineToCustomData(this IMyProgrammableBlock pb,TextMessage message){if(message.Append){pb.CustomData+=message.ToString();}else{pb.
+CustomData=message.ToString();}}}public enum ProgrammableBlockSurfaceType{Display=0,Keyboard=1,}public static class Strings{public
+static TEnum ToEnum<TEnum>(this string enumValue)=>(TEnum)Enum.Parse(typeof(TEnum),enumValue);public static string Wrapped(
+this string text,int maxChars){if(text.Length<=maxChars)return text;var lines=text.Split('\n');for(int i=0;i<lines.Length;i
+++){if(lines[i].Length<=maxChars)continue;for(int ci=1;ci<(lines[i].Length-1);ci++){if((ci%maxChars)==0){lines[i]=lines[i]
+.Insert(ci+1,"\n");}}}return string.Join("\n",lines);}public static StringBuilder Wrapped(this StringBuilder
+stringBuilder,int maxChars){if(stringBuilder.Length<=maxChars)return stringBuilder;List<StringBuilder>lines=stringBuilder.SplitSB(
+'\n');for(int i=0;i<lines.Count;i++){if(lines[i].Length<=maxChars)continue;for(int ci=1;ci<(lines[i].Length-1);ci++){if((ci%
+maxChars)==0){lines[i]=lines[i].Insert(ci+1,"\n");}}}return stringBuilder;}public static List<StringBuilder>SplitSB(this
+StringBuilder stringBuilder,char separator){var split=new List<StringBuilder>();var last=new StringBuilder(stringBuilder.Length);for(
+int ci=0;ci<stringBuilder.Length;ci++){char c=stringBuilder[ci];if(c==separator){split.Add(last);last=new StringBuilder(
+stringBuilder.Length-last.Length);}else{last.Append(c);}}return split;}}public class TextMessage{public string Data{get;set;}public
+TextMessageType Type{get;set;}public bool HasLineBreak{get;set;}public bool Append{get;set;}public int MaxLineChars{get;set;}public
+TextMessage(string data,TextMessageType type,bool hasLineBreak,bool append,int maxLineChars=0){Data=data;Type=type;HasLineBreak=
+hasLineBreak;Append=append;MaxLineChars=maxLineChars;}public static TextMessage NewLine(string data,TextMessageType type,int
+maxLineChars=0)=>new TextMessage(data,type,true,true,maxLineChars);private static string GetTypeString(TextMessageType type){switch(
+type){case TextMessageType.Empty:return"";case TextMessageType.Info:return"> INFO: ";case TextMessageType.Warning:return
+"> WARN: ";case TextMessageType.Error:return"> EROR: ";default:return"";}}public override string ToString(){var result=new
+StringBuilder(GetTypeString(Type),8+Data.Length);result.Append(Data);if(MaxLineChars!=0){result=result.Wrapped(MaxLineChars);}if(
+HasLineBreak){result.Append('\n');}return result.ToString();}}public enum TextMessageType{Empty,Info,Warning,Error,}public static
+class TextSurfaces{private const int MaxChars=26;private const int MaxLines=11;public static int MaxCharsPerLine(this
+IMyTextSurface surface)=>MaxChars/(int)surface.FontSize;public static void WriteMessage(this IMyTextSurface surface,TextMessage
+message){int maxChars=(int)(MaxChars/surface.FontSize);int maxLines=(int)(MaxLines/surface.FontSize);string[]lines=surface.
+GetText().Split('\n');message.MaxLineChars=maxChars;surface.WriteText(message.ToString(),message.Append&&(lines.Length<=
+maxLines));}

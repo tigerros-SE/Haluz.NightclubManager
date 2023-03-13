@@ -5,7 +5,13 @@ VisualStudioVersion = 16.0.32407.337
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NightclubManager", "NightclubManager\NightclubManager.csproj", "{200A6683-C281-45F4-A2F3-A9A78A24E7E2}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SEKit", "..\..\SEKit\SEKit\SEKit.shproj", "{61EBA249-19F3-48B6-A25B-A4CEE90168BA}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\SEKit\SEKit\SEKit.projitems*{200a6683-c281-45f4-a2f3-a9a78a24e7e2}*SharedItemsImports = 4
+		..\..\SEKit\SEKit\SEKit.projitems*{61eba249-19f3-48b6-a25b-a4cee90168ba}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 	EndGlobalSection
